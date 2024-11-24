@@ -18,7 +18,7 @@ class AlbumsController extends Controller
     {
         // Fetch artists
         $response = Http::withHeaders([
-            'Authorization' => 'Basic ZGV2ZWxvcGVyOlpHVjJaV3h2Y0dWeQ=='
+            'Authorization' => config('services.api.bearer_token')
         ])->get('https://europe-west1-madesimplegroup-151616.cloudfunctions.net/artists-api-controller');
 
         // If successful
@@ -49,7 +49,7 @@ class AlbumsController extends Controller
     {
         // Fetch artists
         $response = Http::withHeaders([
-            'Authorization' => 'Basic ZGV2ZWxvcGVyOlpHVjJaV3h2Y0dWeQ=='
+            'Authorization' => config('services.api.bearer_token')
         ])->get('https://europe-west1-madesimplegroup-151616.cloudfunctions.net/artists-api-controller');
 
         // If successful

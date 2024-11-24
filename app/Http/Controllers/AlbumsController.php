@@ -16,19 +16,9 @@ class AlbumsController extends Controller
 
     public function create()
     {
-        // Fetch artists
-        $response = Http::withHeaders([
-            'Authorization' => config('services.api.bearer_token')
-        ])->get('https://europe-west1-madesimplegroup-151616.cloudfunctions.net/artists-api-controller');
-
-        // If successful
-        if ($response->successful()) {
-            $artists = collect($response->json()['json'])->flatten(1);
-
-            return view('albums.create', ['artists' => $artists]);
-        } else {
-            return back()->withErrors(['error' => 'Failed to fetch artists']);
-        }
+        // Fetch artists from the session or API
+        $artists = $this->getArtists();
+        return view('albums.create', ['artists' => $artists]);
     }
 
     public function store(Request $request)
@@ -47,24 +37,14 @@ class AlbumsController extends Controller
 
     public function edit(Albums $album)
     {
-        // Fetch artists
-        $response = Http::withHeaders([
-            'Authorization' => config('services.api.bearer_token')
-        ])->get('https://europe-west1-madesimplegroup-151616.cloudfunctions.net/artists-api-controller');
+        // Fetch artists from the session or API
+        $artists = $this->getArtists();
 
-        // If successful
-        if ($response->successful()) {
-            $artists = collect($response->json()['json'])->flatten(1);
-
-            return view('albums.edit', [
-                'album' => $album,
-                'artists' => $artists
-            ]);
-        } else {
-            return back()->withErrors(['error' => 'Failed to fetch artists']);
-        }
+        return view('albums.edit', [
+            'album' => $album,
+            'artists' => $artists
+        ]);
     }
-
 
     public function update(Albums $album, Request $request)
     {
@@ -85,5 +65,34 @@ class AlbumsController extends Controller
         $album->delete();
 
         return redirect()->route('albums.index')->with('success', 'Album deleted successfully!');
+    }
+
+    // Fetch artists from the session or API.
+    private function getArtists()
+    {
+        // Check if artists are in the session and valid
+        if (session()->has('artists') && session('artists_last_fetched') > now()->subHours(1)) {
+            return session('artists');
+        }
+
+        // Fetch artists from the API
+        $response = Http::withHeaders([
+            'Authorization' => config('services.api.bearer_token')
+        ])->get('https://europe-west1-madesimplegroup-151616.cloudfunctions.net/artists-api-controller');
+
+        if ($response->successful()) {
+            $artists = collect($response->json()['json'])->flatten(1);
+
+            // Cache the artists in the session
+            session([
+                'artists' => $artists,
+                'artists_last_fetched' => now(),
+            ]);
+
+            return $artists;
+        }
+
+        // Handle API failure
+        return collect(); // Return an empty collection if the API call fails
     }
 }

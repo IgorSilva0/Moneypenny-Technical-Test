@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AlbumsController;
-use App\Http\Controllers\ArtistsController;
+use App\Http\Controllers\AlbumController;
+use App\Http\Controllers\ArtistController;
 
 // Home route
 Route::get('/', function () {
@@ -10,7 +10,7 @@ Route::get('/', function () {
 });
 
 // Albums Routes
-Route::resource('/albums', AlbumsController::class)->except(['show']);
+Route::resource('/albums', AlbumController::class)->except(['show']);
 
 // Artists Routes
-Route::get('/artists', [ArtistsController::class, 'index'])->name('artists.index');
+Route::get('/artists', [ArtistController::class, 'index'])->name('artists.index');

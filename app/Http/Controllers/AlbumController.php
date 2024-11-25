@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Albums;
+use App\Models\Album;
 use Illuminate\Support\Facades\Http;
 
-class AlbumsController extends Controller
+class AlbumController extends Controller
 {
     public function index()
     {
-        $albums = Albums::all();
+        $albums = Album::all();
         return view('albums.index', ['albums' => $albums]);
     }
 
@@ -30,12 +30,12 @@ class AlbumsController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        Albums::create($data);
+        Album::create($data);
 
         return redirect()->route('albums.index')->with('success', 'Album created successfully!');
     }
 
-    public function edit(Albums $album)
+    public function edit(Album $album)
     {
         // Fetch artists from the session or API
         $artists = $this->getArtists();
@@ -46,7 +46,7 @@ class AlbumsController extends Controller
         ]);
     }
 
-    public function update(Albums $album, Request $request)
+    public function update(Album $album, Request $request)
     {
         $data = $request->validate([
             'artist_id' => 'required',
@@ -60,7 +60,7 @@ class AlbumsController extends Controller
         return redirect()->route('albums.index')->with('success', 'Album updated successfully!');
     }
 
-    public function destroy(Albums $album)
+    public function destroy(Album $album)
     {
         $album->delete();
 

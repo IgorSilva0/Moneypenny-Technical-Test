@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\Albums;
+use App\Models\Album;
 
-class AlbumsControllerTest extends TestCase
+class AlbumControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -42,7 +42,7 @@ class AlbumsControllerTest extends TestCase
     // Test for Index (Read)
     public function test_index_displays_albums()
     {
-        Albums::factory()->count(3)->create();
+        Album::factory()->count(3)->create();
         $response = $this->get(route('albums.index'));
 
         $response->assertStatus(200);
@@ -60,7 +60,7 @@ class AlbumsControllerTest extends TestCase
     public function test_update_modifies_album()
     {
         // Step 1: Create a mock album
-        $album = Albums::factory()->create([
+        $album = Album::factory()->create([
             'name' => 'Old Name',
             'artist_id' => 1,
             'artist_name' => 'Old Artist',
@@ -98,7 +98,7 @@ class AlbumsControllerTest extends TestCase
     public function test_destroy_deletes_album()
     {
         // Step 1: Create a mock album
-        $album = Albums::factory()->create();
+        $album = Album::factory()->create();
 
         // Step 2: Send DELETE request
         $response = $this->delete(route('albums.destroy', $album));

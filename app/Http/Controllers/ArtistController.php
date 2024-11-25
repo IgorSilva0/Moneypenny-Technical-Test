@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
 
-class ArtistsController extends Controller
+class ArtistController extends Controller
 {
     public function index()
     {
